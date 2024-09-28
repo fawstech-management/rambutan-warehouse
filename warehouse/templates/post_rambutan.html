@@ -221,7 +221,7 @@
     <div class="home-content">
       <div class="form-section">
         <h2>Post Your Rambutan</h2>
-        <form method="POST" enctype="multipart/form-data" action="{% url 'post_rambutan' %}">
+        <form method="POST" enctype="multipart/form-data" action="{% url 'post_rambutan' %} ">
           {% csrf_token %}
           {{ form.as_p }}  <!-- Dynamically render the form fields -->
           <button type="submit" class="submit-button">Post</button>

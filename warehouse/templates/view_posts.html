@@ -214,6 +214,8 @@
         <ul>
           {% for post in posts %}
           <li>
+            <img src="/media/{{ post.image }}" alt="{{ post.name }}" width="100px"><br>
+            <strong>Name:</strong>{{post.name}}<br>
             <strong>Variety: </strong> {{ post.variety }}<br>
             <strong>Quantity: </strong> {{ post.quantity }} kg<br>
             <strong>price_per_kg: </strong>{{ post.price_per_kg }}<br>

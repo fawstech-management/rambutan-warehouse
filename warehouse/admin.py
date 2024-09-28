@@ -46,8 +46,8 @@ class RambutanPostAdmin(admin.ModelAdmin):
 admin.site.register(RambutanPost, RambutanPostAdmin)
 
 class WishlistAdmin(admin.ModelAdmin):
-    list_display = ('user', 'rambutan_post', 'added_at')  # Display these fields in the list view
-    search_fields = ('user__username', 'rambutan_post__name')  # Enable searching by username and product name
-    list_filter = ('user',)  # Optional: filter by user
+    list_display = ('user', 'rambutan_post', 'added_at')  
+    search_fields = ('user__username', 'rambutan_post__name')  
+    list_filter = ('user',)  
 
 admin.site.register(Wishlist, WishlistAdmin)

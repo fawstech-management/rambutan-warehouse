@@ -94,3 +94,11 @@ class Wishlist(models.Model):
 
     class Meta:
         unique_together = ('user', 'rambutan_post')
+
+class FarmerProfile(models.Model):
+    farmer = models.OneToOneField(FarmerDetails, on_delete=models.CASCADE, related_name='profile')
+    profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
+
+    def __str__(self):
+        return f"Profile of {self.farmer}"
+    

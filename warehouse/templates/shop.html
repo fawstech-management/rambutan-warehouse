@@ -151,7 +151,7 @@
 </header>
 
 <div class="top-bar">
-    <span>+1235 2355 98 | youremail@email.com</span>
+    <span>+91 7078945522 | rambutanwarehouse@gmail.com</span>
     <span>Fast Delivery & Free Returns</span>
 </div>
 
@@ -177,9 +177,9 @@
         <div class="product-listing">
             {% for product in products %}
             <div class="product">
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                <img src="/media/{{ product.image }}" alt="{{ product.name }}" width="100px">
                 <h3>{{ product.name }}</h3>
-                <p class="price">₹{{ product.price }} / kg</p>
+                <p class="price">₹{{ product.price_per_kg }} / kg</p>
                 <p>variety: {{ product.variety }}</p>
                 <p>description: {{ product.description }}</p>
                 
