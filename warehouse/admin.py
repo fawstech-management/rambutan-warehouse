@@ -86,8 +86,8 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(Order, OrderAdmin)
 
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ('order', 'cart_item', 'quantity', 'price')
-    search_fields = ('order__order_number', 'cart_item__rambutan_post__name')
+    list_display = ('order', 'quantity', 'price')
+    search_fields = ('order__order_number', )
 
 admin.site.register(OrderItem, OrderItemAdmin)
 

@@ -224,4 +224,4 @@ class OrderForm(forms.ModelForm):
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
-        fields = ['order', 'cart_item', 'quantity', 'price']
+        fields = ['order', 'quantity', 'price']

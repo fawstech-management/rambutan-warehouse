@@ -175,7 +175,7 @@ class Order(models.Model):
         return f'Order {self.order_number} - {self.user.username} - Total: {self.total_amount}'
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
-    cart_item = models.ForeignKey(Cart, on_delete=models.CASCADE)  
+    #cart_item = models.ForeignKey(Cart, on_delete=models.CASCADE)  
     quantity = models.PositiveIntegerField(default=1)  
     price = models.DecimalField(max_digits=10, decimal_places=2)  
 

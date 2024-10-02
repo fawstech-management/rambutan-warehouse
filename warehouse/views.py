@@ -381,7 +381,7 @@ def place_order(request):
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
-                cart_item=item,
+                #cart_item=item,
                 #rambutan_post=item.rambutan_post,
                 quantity=item.quantity,
                 price=item.price
