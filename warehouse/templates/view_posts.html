@@ -130,14 +130,18 @@
     .posts-section ul {
       list-style: none;
       padding: 0;
+      display: flex;
+      flex-wrap: wrap; /* Allow wrapping to the next row */
     }
 
     .posts-section li {
-      margin-bottom: 15px;
+      width: calc(50% - 20px); /* Two items per row with some spacing */
+      margin: 10px; /* Space around each item */
       padding: 15px;
       background-color: #f7f7f7;
       border-radius: 5px;
       border-left: 5px solid #4CAF50;
+      box-sizing: border-box; /* Include padding in the width */
     }
 
     .posts-section li strong {
@@ -203,7 +207,7 @@
       <span class="dashboard">View My Posts</span>
       <div class="profile-details">
         <img src="https://via.placeholder.com/35" alt="Profile">
-        <span>Hi, {{ user.name }}</span> <!-- Assuming 'user' is passed to the template -->
+        <span>Hi, {{ user.username }}</span> <!-- Assuming 'user' is passed to the template -->
         <i class='bx bx-chevron-down'></i>
       </div>
     </nav>
@@ -215,17 +219,16 @@
           {% for post in posts %}
           <li>
             <img src="/media/{{ post.image }}" alt="{{ post.name }}" width="100px"><br>
-            <strong>Name:</strong>{{post.name}}<br>
-            <strong>Variety: </strong> {{ post.variety }}<br>
-            <strong>Quantity: </strong> {{ post.quantity }} kg<br>
-            <strong>price_per_kg: </strong>{{ post.price_per_kg }}<br>
-            <strong>description: </strong>{{ post.description}}<br>
-            <strong>Date: </strong> {{ post.created_at }}<br>
+            <strong>Name:</strong> {{ post.name }}<br>
+            <strong>Variety:</strong> {{ post.variety }}<br>
+            <strong>Quantity:</strong> {{ post.quantity }} kg<br>
+            <strong>Price per kg:</strong> {{ post.price_per_kg }}<br>
+            <strong>Description:</strong> {{ post.description }}<br>
+            <strong>Date:</strong> {{ post.created_at }}<br>
             
             <!-- Add Update and Delete Links Here -->
-            
             <button><a href="{% url 'delete_post' post.id %}">Delete</a></button>
-            <button><a href="{% url 'update_post' post.id%}">Update</a></button>
+            <button><a href="{% url 'update_post' post.id %}">Update</a></button>
           </li>
           {% empty %}
           <li>No posts found. Add your first rambutan post.</li>

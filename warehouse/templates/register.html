@@ -145,7 +145,7 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="username">Username (Email):</label>
-                <input type="email" id="username" name="username" placeholder="Enter your email" pattern="^[a-zA-Z0-9._%+-]+@gmail.(com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$" title="Please enter a valid email address." required>
+                <input type="email" id="username" name="username" placeholder="Enter your email" pattern="^[a-zA-Z0-9._%+-]{5,}@gmail\.com$" title="Please enter a valid email address." required>
                 <div class="error-message"></div>
             </div>
 

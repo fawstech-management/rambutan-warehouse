@@ -39,7 +39,7 @@ class RegisterUserForm(forms.ModelForm):
         return username
 
     def is_valid_email(self, email):
-        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        email_regex = r'^[a-zA-Z0-9._%+-]{5,}@gmail\.com$'
         return re.match(email_regex, email)
 
     def save(self, commit=True):

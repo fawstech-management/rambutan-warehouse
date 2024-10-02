@@ -181,7 +181,7 @@ def update_post(request, id):
     else:
         form = RambutanPostForm(instance=post)
         return render(request, 'update_post.html', {'form': form, 'post': post})
-
+'''
 @login_required
 def delete_post_confirmation(request, id):
     post = get_object_or_404(RambutanPost, id=id)
@@ -198,7 +198,20 @@ def delete_post_confirmation(request, id):
         'post': post,
         'has_orders': associated_order_items.exists(),
         'associated_orders': associated_order_items
+    })'''
+@login_required
+def delete_post_confirmation(request, id):
+    post = get_object_or_404(RambutanPost, id=id)
+
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, 'Post deleted successfully.')
+        return redirect('view_posts')
+
+    return render(request, 'confirm_delete.html', {
+        'post': post,
     })
+
 
 @login_required
 def delete_post(request, id):
@@ -269,11 +282,11 @@ def remove_from_wishlist(request, id):
     post = get_object_or_404(RambutanPost, id=id)
     wishlist_item = Wishlist.objects.filter(user=request.user, rambutan_post=post).first()
 
-    '''if wishlist_item:
+    if wishlist_item:
         wishlist_item.delete()
-        messages.success(request, 'Product removed from wishlist.')
-    else:
-        messages.info(request, 'Product is not in your wishlist.')'''
+        #messages.success(request, 'Product removed from wishlist.')
+    #else:
+        #messages.info(request, 'Product is not in your wishlist.')
 
     return redirect('wishlist')
 
@@ -324,9 +337,6 @@ def update_cart_item_quantity(request, cart_item_id):
 
     return redirect('cart')
     
-
-def order(request):
-    return render(request,'order.html')
 
 @login_required
 def billing_view(request):

@@ -187,7 +187,7 @@
                 <p class="price">₹{{ product.price_per_kg }} / kg</p>
                 <p>variety: {{ product.variety }}</p>
                 <p>description: {{ product.description }}</p>
-                
+                <p>farmer: {{ product.farmer.username }}</p>
                 <div class="cart-buttons">
                 <button><a href="{% url 'add_to_wishlist' product.id %}">Add to Wishlist</a></button>
 
