@@ -74,15 +74,19 @@
         }
 
         .product-listing {
-            display: block; /* Change to block for vertical display */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px; /* Change to block for vertical display */
         }
 
         .product {
-            margin: 10px 0; /* Vertical spacing */
+            flex: 1 1 calc(33.333% - 20px);
+            margin: 10px 0;
             border: 1px solid #ddd;
             padding: 10px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
+            background-color: #fff;
             text-align: center;
         }
 
@@ -90,6 +94,7 @@
             max-width: 100%;
             height: auto;
             margin-bottom: 10px;
+            border-radius: 5px;
         }
 
         .product h3 {
@@ -186,7 +191,7 @@
                 <div class="cart-buttons">
                 <button><a href="{% url 'add_to_wishlist' product.id %}">Add to Wishlist</a></button>
 
-                <button><a href="#">Add to Cart</a></button>
+                <button><a href="{% url 'add_to_cart' product.id %}">Add to Cart</a></button>
                 </div>
             </div>
             {% empty %}

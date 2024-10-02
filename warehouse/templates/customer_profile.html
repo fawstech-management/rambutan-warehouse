@@ -157,14 +157,14 @@
             {% csrf_token %}
             <div class="profile-info">
                 <div>
-                    <p><span>Name:</span> {{ customer_details.user.name }}</p>
+                    <p><span>Name:</span> {{ user.name }}</p>
                     <p><span>Email:</span> {{ user.username }}</p>
-                    <p><span>Address:</span> {{ customer_details.address }}</p>
+                    <p><span>Address:</span> {{ user.address }}</p>
                 </div>
 
                 <div>
-                    <p><span>Mobile Number:</span> {{ customer_details.mobile_number }}</p>
-                    <p><span>Location:</span> {{ customer_details.location }}</p>
+                    <p><span>Mobile Number:</span> {{ user.contact }}</p>
+                    <p><span>Location:</span> {{ user.place }}</p>
                 </div>
             </div>
 

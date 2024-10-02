@@ -74,15 +74,19 @@
         }
 
         .product-listing {
-            display: block;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .product {
+            flex: 1 1 calc(33.333% - 20px);
             margin: 10px 0;
             border: 1px solid #ddd;
             padding: 10px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
+            background-color: #fff;
             text-align: center;
         }
 
@@ -90,6 +94,7 @@
             max-width: 100%;
             height: auto;
             margin-bottom: 10px;
+            border-radius: 5px;
         }
 
         .product h3 {
@@ -147,7 +152,7 @@
 <body>
 
 <header>
-    <h1>Rambutan Shop</h1>
+    <h1>Rambutan Wishlist</h1>
 </header>
 
 <div class="top-bar">
@@ -160,6 +165,7 @@
     <div class="sidebar">
         <h2>Quick Links</h2>
         <a href="{% url 'customer_dashboard' %}">Dashboard</a>
+        <a href="{% url 'products_browse' %}">Shop</a>
         <a href="{% url 'wishlist' %}">Wishlist</a>
         <a href="{% url 'cart' %}">Cart</a>
         <a href="{% url 'checkout' %}">Checkout</a>
@@ -172,15 +178,15 @@
         <div class="product-listing">
             {% for item in wishlist_items %}
             <div class="product">
-                <img src="/media/{{ item.image }}" alt="{{ itemt.name }}" width="100px">
+                <img src="/media/{{ item.image }}" alt="{{ item.name }}" width="100px">
                 <h3>{{ item.name }}</h3>
                 <p class="price">₹{{ item.price_per_kg }} / kg</p>
                 <p>Variety: {{ item.variety }}</p>
                 <p>Description: {{ item.description }}</p>
                 
                 <div class="cart-buttons">
-                    <button><a href="#">Remove Wishlist</a></button>
-                    <button><a href="#">Add to Cart</a></button>
+                    <button><a href="{% url 'remove_from_wishlist' item.id %}">Remove Wishlist</a></button>
+                    <button><a href="{% url 'add_to_cart' item.id %}">Add to Cart</a></button>
                 </div>
             </div>
             {% empty %}

@@ -24,6 +24,109 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
 
+    <style>
+        body {
+            background-image: url('{% static "images/rongrien.jpg" %}'); 
+            background-size: cover;
+            background-position: center;
+            font-family: 'Poppins', sans-serif;
+        }
+    
+        /* Style for the home button container */
+    .top-right {
+        position: absolute; /* Position relative to the page */
+        top: 10px; /* Distance from the top */
+        right: 10px; /* Distance from the right */
+    }
+    
+    /* Style for the home button */
+    .home-button {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #007bff; /* Button color */
+        color: white; /* Text color */
+        text-decoration: none; /* Remove underline from text */
+        border-radius: 4px; /* Rounded corners */
+        font-size: 14px; /* Font size */
+        font-family: 'Poppins', sans-serif; /* Font style */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Slight shadow for effect */
+        border: none; /* No border */
+    }
+    
+    /* Change button style on hover */
+    .home-button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        text-decoration: underline; /* Underline text on hover */
+    }
+    
+    
+        .register-container {
+            width: 400px;
+            padding: 20px;
+            margin: 50px auto;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        .form-group {
+            margin-bottom: 15px;
+        }
+    
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    
+        .register-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    
+        .register-button:hover {
+            background-color: #218838;
+        }
+    
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+    
+        .login-link a {
+            color: #007bff;
+        }
+    
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    
+    
+    </head>
 <body>
 <!-- Home Button at Top Right -->
 <div class="top-right">
@@ -42,7 +145,7 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="username">Username (Email):</label>
-                <input type="email" id="username" name="username" placeholder="Enter your email" required>
+                <input type="email" id="username" name="username" placeholder="Enter your email" pattern="^[a-zA-Z0-9._%+-]+@gmail.(com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$" title="Please enter a valid email address." required>
                 <div class="error-message"></div>
             </div>
 
@@ -54,7 +157,7 @@
 
             <div class="form-group">
                 <label for="contact">Mobile Number:</label>
-                <input type="tel" id="contact" name="contact" placeholder="Enter your mobile number" required>
+                <input type="tel" id="contact" name="contact" placeholder="Enter your mobile number" pattern="^[6-9]\d{9}$" title="enter a valid 10-digit number starting with 6,7,8 and 9" required>
                 <div class="error-message"></div>
             </div>
 
@@ -72,13 +175,13 @@
 
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <input type="password" id="password" name="password" placeholder="Enter your password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])\S{8,}$" title="Password must be at least 8 characters long, including at least one uppercase letter, one lowercase letter, one number, and one special character. No spaces allowed." required>
                 <div class="error-message"></div>
             </div>
 
             <div class="form-group">
                 <label for="confirm_password">Confirm Password:</label>
-                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])\S{8,}$" title="please entered the correct password" required>
                 <div class="error-message"></div>
             </div>
 
@@ -99,109 +202,6 @@
         </div>
     </div>
 </body>
-</html>
-
-<style>
-    body {
-        background-image: url('{% static "images/rongrien.jpg" %}'); 
-        background-size: cover;
-        background-position: center;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    /* Style for the home button container */
-.top-right {
-    position: absolute; /* Position relative to the page */
-    top: 10px; /* Distance from the top */
-    right: 10px; /* Distance from the right */
-}
-
-/* Style for the home button */
-.home-button {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #007bff; /* Button color */
-    color: white; /* Text color */
-    text-decoration: none; /* Remove underline from text */
-    border-radius: 4px; /* Rounded corners */
-    font-size: 14px; /* Font size */
-    font-family: 'Poppins', sans-serif; /* Font style */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* Slight shadow for effect */
-    border: none; /* No border */
-}
-
-/* Change button style on hover */
-.home-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    text-decoration: underline; /* Underline text on hover */
-}
-
-
-    .register-container {
-        width: 400px;
-        padding: 20px;
-        margin: 50px auto;
-        background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    .error-message {
-        color: red;
-        font-size: 12px;
-        margin-top: 5px;
-    }
-
-    .register-button {
-        width: 100%;
-        padding: 10px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .register-button:hover {
-        background-color: #218838;
-    }
-
-    .login-link {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .login-link a {
-        color: #007bff;
-    }
-
-    .login-link a:hover {
-        text-decoration: underline;
-    }
-</style>
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Get all form elements
@@ -215,7 +215,7 @@
         const role = document.getElementById("role");
 
         // Regular expressions for validation
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail[a-zA-Z0-9.-]+\.(com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$/; // Stronger email validation
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail.(com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)$/; // Stronger email validation
         const namePattern = /^[a-zA-Z\s'-]+$/; // Allow alphabets, spaces, hyphens, and apostrophes
         const contactPattern = /^[6-9]\d{9}$/; // 10-digit mobile number starting with 6-9
         const addressPattern = /^.{10,}$/; // Minimum 10 characters for address
@@ -352,4 +352,5 @@ console.log(isValidEmail("user@example.com")); // true or false
     });
 </script>
 
-</head>
+</html>
+

@@ -1,15 +1,16 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .forms import CustomerDetailsForm, FarmerDetailsForm,FarmerDetails,RambutanPostForm,RegisterUserForm, WishlistForm
+from .forms import FarmerDetailsForm,FarmerDetails,RambutanPostForm,RegisterUserForm, WishlistForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import CustomerDetails, FarmerDetails, RambutanPost,Registeruser, Wishlist
+from .models import  BillingDetail, Cart, CustomerDetails, FarmerDetails, Order, OrderItem, RambutanPost,Registeruser, Wishlist
 from django.contrib import messages
 from django.shortcuts import render, redirect,HttpResponse
 from django.contrib.auth.hashers import make_password
 from .forms import RegisterUserForm
 from .forms import FarmerDetailsForm, TreeVarietyForm, RambutanPostForm
 from django.contrib import messages
+from django.db.models import F
 
 def index(request):
     if request.method =='POST':
@@ -32,7 +33,7 @@ def register(request):
                 return redirect('login')  
             form.save()
 
-            messages.success(request, "Registration successful! You can now log in.")
+            #messages.success(request, "Registration successful! You can now log in.")
             return redirect('login') 
         else:
             messages.error(request, form.errors)
@@ -61,8 +62,8 @@ def login_view(request):
                 return redirect('customer_dashboard')
             else:
                 return render(request, 'login.html', {'error': 'Invalid user role'})
-        else:
-            messages.error(request,message="Invalid Credentials")
+        #else:
+            #messages.error(request,message="Invalid Credentials")
     return render(request, 'login.html')
 
 @login_required
@@ -127,19 +128,6 @@ def post_rambutan(request):
 
     return render(request, 'post_rambutan.html', {'form': form})
 
-'''
-def create_farmer_details(request):
-    if request.method == 'POST':
-        form = FarmerDetailsForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('sucess')
-        else:
-            messages.error(request,message=form.errors)
-    else:
-        form = FarmerDetailsForm()
-    return render(request, 'forms.html', {'form': form})'''
-
 def create_tree_variety(request):
     if request.method == 'POST':
         form = TreeVarietyForm(request.POST)
@@ -151,18 +139,7 @@ def create_tree_variety(request):
     else:
         form = TreeVarietyForm()
     return render(request, 'forms.html', {'form': form})
-'''
-def create_rambutan_post(request):
-    if request.method == 'POST':
-        form = RambutanPostForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('sucess')
-        else:
-            messages.error(request,message=form.errors)
-    else:
-        form = RambutanPostForm()
-    return render(request, 'forms.html', {'form': form})'''
+
 
 @login_required
 def view_posts(request):
@@ -204,12 +181,28 @@ def update_post(request, id):
     else:
         form = RambutanPostForm(instance=post)
         return render(request, 'update_post.html', {'form': form, 'post': post})
-    
+
 @login_required
-def delete_post(request,id):
-    post = RambutanPost.objects.filter(id=id)
-    post.delete()
-    return redirect('view_posts')
+def delete_post_confirmation(request, id):
+    post = get_object_or_404(RambutanPost, id=id)
+    associated_order_items = OrderItem.objects.filter(cart_item__rambutan_post=post)
+
+    if request.method == 'POST':
+        if associated_order_items.exists():
+            messages.warning(request, 'This post cannot be deleted because it has associated orders.')
+            return redirect('view_posts')
+        post.delete()
+        messages.success(request, 'Post deleted successfully.')
+        return redirect('view_posts')  
+    return render(request, 'confirm_delete.html', {
+        'post': post,
+        'has_orders': associated_order_items.exists(),
+        'associated_orders': associated_order_items
+    })
+
+@login_required
+def delete_post(request, id):
+    return redirect('delete_post_confirmation', id=id)
 
 @login_required
 def customer_dashboard(request):
@@ -237,39 +230,9 @@ def blog(request):
 
 @login_required
 def profile_view(request):
-    try:
-        customer_details = request.user.customerdetails
-    except CustomerDetails.DoesNotExist:
-        return redirect('customer_details')  
-    context = {
-        'customer_details': customer_details,
-    }
-    return render(request, 'customer_profile.html', context)
+   
+    return render(request, 'customer_profile.html')
     
-
-@login_required
-def customer_details(request):
-    if request.method == 'POST':
-
-        address = request.POST.get('address')
-        mobile_number = request.POST.get('mobile_number')
-        location = request.POST.get('location', '')
-        total_orders = int(request.POST.get('total_orders', 0))
-        total_amount_spent = float(request.POST.get('total_amount_spent', 0.00))
-
-        
-        CustomerDetails.objects.create(
-            user=request.user,
-            address=address,
-            mobile_number=mobile_number,
-            location=location,
-            total_orders=total_orders,
-            total_amount_spent=total_amount_spent,
-        )
-
-        return redirect('profile_view')  
-
-    return render(request, 'customer_details.html') 
 
 
 @login_required
@@ -297,12 +260,167 @@ def add_to_wishlist(request,id):
             user=request.user,
             rambutan_post=post 
         )
-    if created:
-        messages.success(request, 'Product added to wishlist.')
+
+    return redirect('wishlist') 
+
+
+@login_required
+def remove_from_wishlist(request, id):
+    post = get_object_or_404(RambutanPost, id=id)
+    wishlist_item = Wishlist.objects.filter(user=request.user, rambutan_post=post).first()
+
+    '''if wishlist_item:
+        wishlist_item.delete()
+        messages.success(request, 'Product removed from wishlist.')
     else:
-        messages.info(request, 'Product is already in your wishlist.')
+        messages.info(request, 'Product is not in your wishlist.')'''
 
-    return redirect('products_browse') 
+    return redirect('wishlist')
 
+@login_required
+def add_to_cart(request, rambutan_post_id):
+    rambutan_post = get_object_or_404(RambutanPost, id=rambutan_post_id)
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user, 
+        rambutan_post=rambutan_post,
+        defaults={'price': rambutan_post.price_per_kg} 
+    )
+    
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    return redirect('cart')  
 
+@login_required
+def cart(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    for item in cart_items:
+        item.total_price = item.price * item.quantity
+    total_price = sum(item.total_price for item in cart_items) 
+    
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    }
+    
+    return render(request, 'cart.html', context)
 
+@login_required
+def remove_cart_item(request, cart_item_id):
+    cart_item = get_object_or_404(Cart, id=cart_item_id, user=request.user)
+    cart_item.delete()
+    
+    return redirect('cart')
+
+@login_required
+def update_cart_item_quantity(request, cart_item_id):
+    cart_item = get_object_or_404(Cart, id=cart_item_id, user=request.user)
+    
+    if request.method == 'POST':
+        new_quantity = int(request.POST.get('quantity', 1))
+        if new_quantity > 0:
+            cart_item.quantity = new_quantity
+            cart_item.save()
+
+    return redirect('cart')
+    
+
+def order(request):
+    return render(request,'order.html')
+
+@login_required
+def billing_view(request):
+    if request.method == 'POST':
+        first_name = request.POST['first-name']
+        last_name = request.POST['last-name']
+        country = request.POST['country']
+        street_address = request.POST['street-address']
+        city = request.POST['city']
+        postcode = request.POST['postcode']
+        phone = request.POST['phone']
+        email = request.POST['email']
+
+        BillingDetail.objects.create(
+            user=request.user,
+            first_name=first_name,
+            last_name=last_name,
+            country=country,
+            street_address=street_address,
+            city=city,
+            postcode=postcode,
+            phone=phone,
+            email=email
+        )
+        return redirect('place_order') 
+
+    return render(request, 'checkout.html') 
+
+@login_required
+def place_order(request):
+    billing_details = BillingDetail.objects.filter(user=request.user).last()
+    cart_items = Cart.objects.filter(user=request.user)
+
+    if not cart_items.exists():
+        return redirect('cart')  
+
+    subtotal = sum(item.total_price for item in cart_items)
+    delivery_fee = 0
+    discount = 0
+    total = subtotal + delivery_fee - discount
+
+    if request.method == 'POST':
+        payment_method = request.POST.get('payment-method')
+
+        order = Order.objects.create(
+            billing_detail=billing_details,
+            user=request.user,
+            total_amount=total,
+            payment_method=payment_method
+        )
+
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                cart_item=item,
+                #rambutan_post=item.rambutan_post,
+                quantity=item.quantity,
+                price=item.price
+            )
+
+        cart_items.delete()
+
+        return redirect('order_detail', order_number=order.order_number)
+
+    return render(request, 'place_order.html', {
+        'billing_details': billing_details,
+        'cart_items': cart_items,
+        'subtotal': subtotal,
+        'delivery_fee': delivery_fee,
+        'discount': discount,
+        'total': total,
+    })
+@login_required
+def order_detail(request, order_number):
+    try:
+        order = Order.objects.get(order_number=order_number, user=request.user)
+        order_items = order.items.all()  
+      
+        billing_details = order.billing_detail
+        
+        subtotal = sum(item.price * item.quantity for item in order_items)
+        delivery_fee = 0  
+        discount = 0  
+        total = subtotal + delivery_fee - discount
+
+    except Order.DoesNotExist:
+        return redirect('order_not_found') 
+
+    return render(request, 'order.html', {
+        'order': order,
+        'order_items': order_items,
+        'billing_details': billing_details,
+        'subtotal': subtotal,
+        'delivery_fee': delivery_fee,
+        'discount': discount,
+        'total': total,
+    })

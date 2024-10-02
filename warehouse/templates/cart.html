@@ -1,235 +1,313 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title> Rambutan Cart</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&display=swap" rel="stylesheet">
-
-    
-    <link rel="stylesheet" href="{% static 'css/open-iconic-bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
-    <link rel="stylesheet" href="{% static 'css/aos.css' %}">
-    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.css' %}">
-    <link rel="stylesheet" href="{% static 'css/jquery.timepicker.css' %}">
-    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
-    <link rel="stylesheet" href="{% static 'css/icomoon.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rambutan Shop</title>
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
         }
-        .hero-wrap {
-            background-image: url("{% static 'images/rambutan.jpg' %}");
-            background-size: cover;
-            background-position: center;
-        }
-        .cart-list .table {
-            background-color: #f8f9fa;
-        }
-        .cart-list .table thead {
-            background-color: #343a40;
-            color: #fff;
-        }
-        .cart-list .table td, .cart-list .table th {
+
+        header {
+            background-color: #e67e22;
+            color: white;
             padding: 15px;
+            text-align: center;
         }
-        .cart-list .table .product-name h3 {
-            font-size: 1.2rem;
+
+        header h1 {
+            margin: 0;
+        }
+
+        .top-bar {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .top-bar span {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 20%;
+            background-color: #34495e;
+            padding: 20px;
+            color: white;
+        }
+
+        .sidebar h2 {
+            color: #ecf0f1;
+        }
+
+        .sidebar a {
+            color: #bdc3c7;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .sidebar a:hover {
+            color: #ecf0f1;
+        }
+
+        .main-content {
+            width: 80%;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .main-content h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .product-listing {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .product {
+            flex: 1 1 calc(33.333% - 20px);
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            padding: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .product img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .product h3 {
+            font-size: 18px;
             color: #333;
         }
-        .cart-list .table .product-name p {
-            font-size: 0.9rem;
-            color: #666;
+
+        .product p {
+            font-size: 16px;
+            color: #e74c3c;
+            margin: 5px 0;
         }
+
+        .product .price {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .product .cart-buttons {
+            margin-top: 10px;
+        }
+
+        .cart-buttons button {
+            background-color: #07d300;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .cart-buttons button:hover {
+            background-color: #009bd3;
+        }
+
+        .cart-buttons a {
+            color: white;
+            text-decoration: none;
+        }
+
         .cart-total {
-            background-color: #fff;
+            background-color: #f1f1f1;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: left;
         }
+
         .cart-total h3 {
-            margin-bottom: 15px;
-            font-size: 1.5rem;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
+
         .cart-total p {
-            font-size: 1rem;
+            font-size: 18px;
+            margin-bottom: 10px;
         }
-        .cart-total .btn {
-            background-color: #ff5733;
-            color: #fff;
+
+        .cart-total p span {
+            float: right;
         }
-        .cart-total .btn:hover {
-            background-color: #e14f28;
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            margin-top: 20px;
         }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+        /* Cart Total Styling */
+.cart-total-box {
+    background-color: #f8f8f8;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin-top: 30px;
+    text-align: center;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-total-box h3 {
+    font-size: 26px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.cart-total-box p {
+    font-size: 18px;
+    margin: 15px 0;
+    color: #555;
+}
+
+.cart-total-box .total-price {
+    font-size: 22px;
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.cart-total-box .checkout-btn {
+    background-color: #07d300;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.cart-total-box .checkout-btn:hover {
+    background-color: #009bd3;
+}
+
     </style>
+
 </head>
-<body class="goto-here">
-    <div class="py-1 bg-primary">
-        <div class="container">
-            <div class="row no-gutters d-flex align-items-start align-items-center px-md-0">
-                <div class="col-lg-12 d-block">
-                    <div class="row d-flex">
-                        <div class="col-md pr-4 d-flex topper align-items-center">
-                            <div class="icon mr-2 d-flex justify-content-center align-items-center">
-                                <span class="icon-phone2"></span>
-                            </div>
-                            <span class="text">+ 1235 2355 98</span>
-                        </div>
-                        <div class="col-md pr-4 d-flex topper align-items-center">
-                            <div class="icon mr-2 d-flex justify-content-center align-items-center">
-                                <span class="icon-paper-plane"></span>
-                            </div>
-                            <span class="text">youremail@email.com</span>
-                        </div>
-                        <div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
-                            <span class="text">3-5 Business days delivery &amp; Free Returns</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+<body>
+
+<header>
+    <h1>Rambutan Cart</h1>
+</header>
+
+<div class="top-bar">
+    <span>+91 7078945522 | rambutanwarehouse@gmail.com</span>
+    <span>Fast Delivery & Free Returns</span>
+</div>
+
+<div class="container">
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <h2>Quick Links</h2>
+        <a href="{% url 'customer_dashboard' %}">Dashboard</a>
+        <a href="{% url 'products_browse' %}">Shop</a>
+        <a href="{% url 'wishlist' %}">Wishlist</a>
+        <a href="{% url 'cart' %}">Cart</a>
+        <a href="{% url 'checkout' %}">Checkout</a>
+        <a href="{% url 'logout' %}">Logout</a>
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}"> Rambutan Cart</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="oi oi-menu"></span> Menu
-            </button>
-
-            <div class="collapse navbar-collapse" id="ftco-nav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a href="{% url 'index' %}" class="nav-link">Home</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdown04">
-                            <a class="dropdown-item" href="{% url 'products_browse' %}">Shop</a>
-                            <a class="dropdown-item" href="{% url 'wishlist' %}">Wishlist</a>
-                            <a class="dropdown-item" href="{% url 'product_single' %}">Single Product</a>
-                            <a class="dropdown-item" href="{% url 'cart' %}">Cart</a>
-                            <a class="dropdown-item" href="{% url 'checkout' %}">Checkout</a>
-                        </div>
-                    </li>
-                    <li class="nav-item"><a href="{% url 'about' %}" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="{% url 'blog' %}" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="{% url 'contact' %}" class="nav-link">Contact</a></li>
-                    <li class="nav-item cta cta-colored"><a href="{% url 'cart' %}" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
-
-    <div class="hero-wrap hero-bread">
-        <div class="container">
-            <div class="row no-gutters slider-text align-items-center justify-content-center">
-                <div class="col-md-9 ftco-animate text-center">
-                    <p class="breadcrumbs">
-                        <span class="mr-2"><a href="{% url 'index' %}">Home</a></span> <span>Rambutan Cart</span>
-                    </p>
-                    <h1 class="mb-0 bread">My Rambutan Cart</h1>
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>My Rambutan Cart</h1>
+        <div class="product-listing">
+            {% for item in cart_items %}
+            <div class="product" id="product-{{ item.id }}">
+                <img src="/media/{{ item.rambutan_post.image }}" alt="{{ item.name }}" width="100px">
+                <h3>{{ item.rambutan_post.name }}</h3>
+                <p class="price">Price per kg: ₹<span id="price-{{ item.id }}">{{ item.price }}</span></p>
+                <p>Variety: {{ item.rambutan_post.variety }}</p>
+                <p>Description: {{ item.rambutan_post.description }}</p>
+                
+                <form action="{% url 'update_cart_item_quantity' item.id %}" method="POST">
+                    {% csrf_token %}
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="100">
+                    <button type="submit">Update Quantity</button>
+                </form>
+                <!-- Total Price (will be updated dynamically) -->
+                <p>Total Price: ₹{{ item.total_price }}</p>
+            
+                <div class="cart-buttons">
+                    <button><a href="{% url 'remove_cart_item' item.id %}">Remove Wishlist</a></button>
+                
                 </div>
             </div>
+            
+            {% empty %}
+            <p>No products available at the moment.</p>
+            {% endfor %}
         </div>
+
+        <div class="cart-total-box">
+            <h3>Cart Totals</h3>
+            <p>
+                <span>Subtotal</span>
+                <span>₹{{ total_price|floatformat:2 }}</span>
+            </p>
+            <p>
+                <span>Delivery</span>
+                <span>₹0.00</span>
+            </p>
+            <hr>
+            <p class="total-price">
+                <span>Total</span>
+                <span>₹{{ total_price|floatformat:2 }}</span>
+            </p>
+            <a href="{% url 'checkout' %}" class="checkout-btn">Proceed to Checkout</a>
+        </div>
+        
     </div>
+</div>
 
-    <section class="ftco-section ftco-cart">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 ftco-animate">
-                    <div class="cart-list">
-                        <table class="table">
-                            <thead class="thead-primary">
-                                <tr class="text-center">
-                                    <th>&nbsp;</th>
-                                    <th>&nbsp;</th>
-                                    <th>Product name</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="text-center">
-                                    <td class="image-prod">
-                                        <div class="img" style="background-image:url('{% static 'images/rambutan.jpg' %}');"></div>
-                                    </td>
-                                    <td class="product-name">
-                                        <h3>Rambutan</h3>
-                                        <p>Fresh Rambutan Fruit</p>
-                                    </td>
-                                    <td class="price">$2.00</td>
-                                    <td class="quantity">
-                                        <div class="input-group mb-3">
-                                            <input type="text" class="quantity form-control input-number" value="1" min="1" max="100">
-                                        </div>
-                                    </td>
-                                    <td class="total">$2.00</td>
-                                    <td class="product-remove"><a href="#" class="btn btn-danger">X</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="row justify-content-end">
-                <div class="col col-lg-4 col-md-6 mt-5 cart-total">
-                    <h3>Cart Totals</h3>
-                    <p class="d-flex">
-                        <span>Subtotal</span>
-                        <span>$2.00</span>
-                    </p>
-                    <p class="d-flex">
-                        <span>Delivery</span>
-                        <span>$0.00</span>
-                    </p>
-                    <hr>
-                    <p class="d-flex total-price">
-                        <span>Total</span>
-                        <span>$2.00</span>
-                    </p>
-                    <p><a href="{% url 'checkout' %}" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
-                </div>
-            </div>
-        </div>
-    </section>
+<footer>
+    <p>&copy; 2024 Rambutan Shop. All Rights Reserved.</p>
+    <a href="#">Privacy Policy</a> | <a href="#">Terms & Conditions</a> | <a href="#">Contact Us</a>
+</footer>
+<p>Cart Total: ₹<span id="cart-total">{{ total_price }}</span></p>
 
-    <footer class="ftco-footer ftco-section img">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md text-center">
-                    <p class="mb-0">
-                        <small>&copy; 2023 All Rights Reserved.</small>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
 
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/jquery-migrate-3.0.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
-    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-    <script src="{% static 'js/jquery.stellar.min.js' %}"></script>
-    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
-    <script src="{% static 'js/aos.js' %}"></script>
-    <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
-    <script src="{% static 'js/scrollax.min.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+
 </body>
 </html>
