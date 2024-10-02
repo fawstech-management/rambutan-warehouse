@@ -102,6 +102,18 @@
         .summary-footer button:hover {
             background-color: #2ecc71;
         }
+        .quick-actions a {
+      padding: 12px 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 18px;
+    }
+
+    .quick-actions a:hover {
+      background-color: #2e7d32;
+    }
     </style>
 </head>
 
@@ -168,7 +180,9 @@
 
     <!-- Button to Continue Shopping -->
     <div class="summary-footer">
-        <button type="button" onclick="window.location.href='/'">Continue Shopping</button>
+        <div class="quick-actions">
+            <a href="{% url 'products_browse' %}">Continue Shopping</a>
+        </div>  
     </div>
 
 </div>

@@ -180,13 +180,12 @@
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" placeholder="Email Address"  pattern="^[a-zA-Z0-9_.+-]+@gmail\.(?![a-zA-Z]+$)[a-zA-Z0-9-.]+$" title="Please enter a valid email address."required>
             </div>
-            <button type="submit" class="register-button"><a href="{% url 'place_order' %}">next</a></button>
-
+            <div class="place-order">
+            <button type="submit" class="register-button">next</a></button>
+            </div>
         </form>
 
-        <div class="place-order">
-            <button ><a href="{% url 'place_order' %}">next</a></button>
-        </div>
+        
     </div>
 
 </body>

@@ -403,17 +403,17 @@ def place_order(request):
 def order_detail(request, order_number):
     try:
         order = Order.objects.get(order_number=order_number, user=request.user)
-        order_items = order.items.all()  
-      
-        billing_details = order.billing_detail
         
+        order_items = OrderItem.objects.filter(order=order)  
+        
+        billing_details = order.billing_detail
         subtotal = sum(item.price * item.quantity for item in order_items)
-        delivery_fee = 0  
-        discount = 0  
+        delivery_fee = 0 
+        discount = 0     
         total = subtotal + delivery_fee - discount
 
     except Order.DoesNotExist:
-        return redirect('order_not_found') 
+        return redirect('order')
 
     return render(request, 'order.html', {
         'order': order,
