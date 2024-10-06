@@ -149,7 +149,8 @@
             <h4>Products Ordered</h4>
             {% for item in order_items %}  <!-- Corrected from order.items.all to order_items -->
             <div class="cart-item">
-                <div>{{ item.cart_item.rambutan_post.name }} (x{{ item.quantity }})</div>
+                <img src="/media/{{ item.rambutan_post.image }}" alt="{{ item.name }}" width="100px">
+                <div>{{ item.rambutan_post.name }} (x{{ item.quantity }})</div>
                 <div>₹{{ item.price }}</div>
             </div>
             {% endfor %}
