@@ -491,7 +491,7 @@
                     <div class="order-card">
                         <h3>Order Number: {{ order.order_number }}</h3>
                         <p>Date: {{ order.created_at|date:"F j, Y" }}</p>
-                        <p>Total Amount: ${{ order.total_amount }}</p>
+                        <p>Total Amount: ₹{{ order.total_amount }}</p>
                         <ul class="order-items">
                             {% for item in order.items.all %}
                                 <img src="{% if item.rambutan_post.image %}/media/{{ item.rambutan_post.image }}{% endif %}" alt="{{ product.name }}" width="100px">

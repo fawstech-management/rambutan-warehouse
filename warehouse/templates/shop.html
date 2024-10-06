@@ -66,12 +66,22 @@
             transition: width 0.3s;
             display: flex;
             flex-direction: column;
-            z-index: 999; /* Ensure it's below the navbar */
+           /* z-index: 999;*/ /* Ensure it's below the navbar */
         }
-
-        .sidebar.active {
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        /* .sidebar.active {
             width: 80px;
-        }
+        }*/
 
         .sidebar .logo-details {
             display: flex;
@@ -129,7 +139,7 @@
             top: 0;
             left: 250px;
             right: 0;
-            z-index: 1001; /* Ensure navbar is above the sidebar */
+            z-index: 1000; /* Ensure navbar is above the sidebar */
         }
 
         .logo-text {
@@ -186,11 +196,11 @@
         .home-section {
             margin-left: 250px;
             width: calc(100% - 250px);
-            padding-top: 100px; /* Increased to add more space */
+            padding-top: 60px; /* Increased to add more space */
             padding: 20px;
             transition: margin-left 0.3s, width 0.3s;
             min-height: 100vh;
-            margin-top: 0; /* Removed to prevent overlapping */
+            margin-top: 60px; /* Removed to prevent overlapping */
         }
 
         
@@ -302,7 +312,7 @@
             .home-section {
                 margin-left: 80px;
                 width: calc(100% - 80px);
-                padding-top: 60px; /* Adjusted padding-top */
+                /*padding-top: 60px; *//* Adjusted padding-top */
             }
 
             .sidebar ul.nav-links li a .links_name {
@@ -426,12 +436,12 @@
             <div class="product-listing">
                 {% for product in products %}
                 <div class="product">
-                    <img src="{% if product.image %}/media/{{ product.image }}{% else %}{% static 'images/default_product.jpg' %}{% endif %}" alt="{{ product.name }}" width="100px">
+                    <img src="{% if product.image %}/media/{{ product.image }}{% else %}{% static 'images/default_product.jpg' %}{% endif %}" alt="{{ product.name }}" width="100px" >
                     <h3>{{ product.name }}</h3>
                     <p class="price">₹{{ product.price_per_kg }} / kg</p>
                     <p>Variety: {{ product.variety }}</p>
                     <p>Description: {{ product.description }}</p>
-                    <p>Farmer: {{ product.farmer.user.name }}</p>
+                    <p>Farmer: {{ product.user.username }}</p>
         
                     {% if product.status_message %}
                         <p class="unavailable">{{ product.status_message }}</p> <!-- Display 'Unavailable' for the product -->

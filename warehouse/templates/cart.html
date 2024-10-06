@@ -394,6 +394,13 @@
         footer a:hover {
             text-decoration: underline;
         }
+        .checkout-btn.disabled {
+    background-color: #ccc; /* Light gray color */
+    color: #999; /* Lighter text color */
+    pointer-events: none; /* Prevent clicks */
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
+}
+
     </style>
 
 </head>
@@ -526,7 +533,7 @@
             <span>Total</span>
             <span>₹{{ total_price|floatformat:2 }}</span>
         </p>
-        <a href="{% url 'checkout' %}" class="checkout-btn {% if total_price == 0 %}disabled{% endif %}">Proceed to Checkout</a>
+        <a href="{% url 'checkout' %}" class="checkout-btn {% if total_price == 0.00 %}disabled{% endif %}">Proceed to Checkout</a>
     </div>
 </div>
 
@@ -542,11 +549,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Logout Confirmation
             const logoutLinks = document.querySelectorAll('.logout-button, .nav-links a[href="{% url 'logout' %}"]');
-
+    
             logoutLinks.forEach(function (element) {
                 element.addEventListener('click', function (event) {
                     event.preventDefault(); // Prevent the default logout action
-
+    
                     Swal.fire({
                         title: 'Are you sure you want to logout?',
                         icon: 'warning',
@@ -562,14 +569,14 @@
                     });
                 });
             });
-
+    
             // Remove Cart Item Confirmation
             const removeButtons = document.querySelectorAll('.cart-buttons .remove a');
-
+    
             removeButtons.forEach(function (element) {
                 element.addEventListener('click', function (event) {
                     event.preventDefault(); // Prevent the default remove action
-
+    
                     Swal.fire({
                         title: 'Are you sure you want to remove this item from your cart?',
                         icon: 'warning',
@@ -585,14 +592,14 @@
                     });
                 });
             });
-
+    
             // Update Quantity Confirmation
             const updateForms = document.querySelectorAll('.update-quantity-form');
-
+    
             updateForms.forEach(function (form) {
                 form.addEventListener('submit', function (event) {
                     event.preventDefault(); // Prevent the default form submission
-
+    
                     Swal.fire({
                         title: 'Update Quantity?',
                         text: "Are you sure you want to update the quantity for this item?",
@@ -609,9 +616,18 @@
                     });
                 });
             });
+    
+            // Checkout Button Prevention
+            const checkoutBtn = document.querySelector(".checkout-btn.disabled");
+            
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener("click", function (event) {
+                    event.preventDefault(); // Prevent the default action
+                });
+            }
         });
     </script>
-
+    
 </body>
 
 </html>

@@ -96,10 +96,10 @@ def farmer_details(request):
             farmer_profile = form.save()
             farmer_profile.user = request.user  
             farmer_profile.save()
-            messages.success(request, "Your profile has been updated successfully." if farmer_details else "Profile created successfully.")
+            #messages.success(request, "Your profile has been updated successfully." if farmer_details else "Profile created successfully.")
             return redirect('farmer_dashboard') 
-        else:
-            messages.error(request,message=form.errors) 
+        #else:
+            #messages.error(request,message=form.errors) 
     else:
         form = FarmerDetailsForm(instance=farmer_details)
 
@@ -124,8 +124,8 @@ def post_rambutan(request):
             rambutan_post.quantity_left = rambutan_post.quantity  
             rambutan_post.save()
             return redirect('view_posts')  
-        else:
-            messages.error(request,message=form.errors)
+        #else:
+            #messages.error(request,message=form.errors)
     else:
         form = RambutanPostForm()
 
@@ -168,7 +168,7 @@ def view_posts(request):
 
 def redirect_post_rambutan(request):
     return redirect('post_rambutan') 
-@login_required
+
 def update_post(request, id):
     post = get_object_or_404(RambutanPost, id=id)
 
@@ -203,17 +203,17 @@ def delete_post_confirmation(request, id):
     if request.method == 'POST':
         # If the post is in any order, show a warning and prevent deletion
         if in_order:
-            messages.warning(request, 'This post cannot be deleted because it has associated orders.')
+           # messages.warning(request, 'This post cannot be deleted because it has associated orders.')
             return redirect('view_posts')
 
         # If in a cart or wishlist, mark the post as unavailable (without deleting the cart/wishlist items)
         if in_cart or in_wishlist:
             post.is_available = False  # Mark as unavailable
             post.save()
-            messages.success(request, 'Post marked as unavailable because it is in a cart or wishlist.')
+            #messages.success(request, 'Post marked as unavailable because it is in a cart or wishlist.')
         else:
             post.delete()  # Delete only if not in cart or wishlist
-            messages.success(request, 'Post deleted successfully.')
+           # messages.success(request, 'Post deleted successfully.')
         
         return redirect('view_posts')
 
@@ -369,9 +369,19 @@ def update_cart_item_quantity(request, cart_item_id):
 
     return redirect('cart')
     
-
 @login_required
 def billing_view(request):
+    # Check if cart items exceed available quantity
+    cart_items = Cart.objects.filter(user=request.user)
+    for cart_item in cart_items:
+        rambutan_post = cart_item.rambutan_post
+        
+        # Compare the quantity in the cart with the available quantity in the post
+        if cart_item.quantity > rambutan_post.quantity_left:
+            #messages.error(request, f"Sorry, the quantity of '{rambutan_post.name}' in your cart exceeds the available stock.")
+            return redirect('cart')  # Redirect to cart to let user adjust quantities
+
+    # Proceed with the billing form if quantities are valid
     if request.method == 'POST':
         first_name = request.POST['first-name']
         last_name = request.POST['last-name']
@@ -382,6 +392,7 @@ def billing_view(request):
         phone = request.POST['phone']
         email = request.POST['email']
 
+        # Create the billing details
         BillingDetail.objects.create(
             user=request.user,
             first_name=first_name,
@@ -393,10 +404,11 @@ def billing_view(request):
             phone=phone,
             email=email
         )
-        return redirect('place_order') 
+        
+        return redirect('place_order')
 
     return render(request, 'checkout.html')
- 
+
 @login_required
 def place_order(request):
     billing_details = BillingDetail.objects.filter(user=request.user).last()
@@ -408,7 +420,7 @@ def place_order(request):
     # Check if all items in the cart are available
     unavailable_items = cart_items.filter(rambutan_post__is_available=False)
     if unavailable_items.exists():
-        messages.error(request, "Some items in your cart are no longer available.")
+        #messages.error(request, "Some items in your cart are no longer available.")
         return redirect('cart')
 
     subtotal = sum(item.total_price for item in cart_items)
@@ -434,7 +446,7 @@ def place_order(request):
 
             # Ensure that there is enough quantity left in the RambutanPost
             if rambutan_post.quantity_left < ordered_quantity:
-                messages.error(request, f"Insufficient quantity for {rambutan_post.name}.")
+                #messages.error(request, f"Insufficient quantity for {rambutan_post.name}.")
                 return redirect('cart')
 
             # Subtract ordered quantity from the rambutan_post's quantity_left
@@ -494,8 +506,6 @@ def order_detail(request, order_number):
         'discount': discount,
         'total': total,
     })
-from django.shortcuts import render
-from .models import Order
 
 @login_required
 def order_history(request):
