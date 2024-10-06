@@ -79,13 +79,23 @@ class RambutanPost(models.Model):
     name = models.CharField(max_length=255)
     variety = models.CharField(max_length=100)
     quantity = models.PositiveIntegerField() 
+    quantity_left = models.PositiveIntegerField(default=0)  # Quantity left after sales
     price_per_kg = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='rambutan_images/', blank=True, null=True) 
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
+    is_available = models.BooleanField(default=True)  # Whether the post is still available
+    
     def __str__(self):
         return f"{self.name} ({self.variety}) - {self.quantity}kg"
+    def save(self, *args, **kwargs):
+
+        # Update availability status based on quantity left
+        #if self.quantity_left <=0:
+          #  self.is_available = False
+        #else:
+          #  self.is_available = True
+        super().save(*args, **kwargs)
 
 class Wishlist(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='wishlists')
@@ -176,8 +186,9 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     #cart_item = models.ForeignKey(Cart, on_delete=models.CASCADE)  
+    rambutan_post = models.ForeignKey(RambutanPost, on_delete=models.CASCADE, related_name='items')
     quantity = models.PositiveIntegerField(default=1)  
     price = models.DecimalField(max_digits=10, decimal_places=2)  
 
     def __str__(self):
-        return f'{self.cart_item.rambutan_post.name} - Quantity: {self.quantity}' 
+        return f'{self.order.order_number} - Quantity: {self.quantity}' 

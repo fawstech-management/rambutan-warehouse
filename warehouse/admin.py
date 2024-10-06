@@ -29,7 +29,7 @@ from django.contrib import admin
 from .models import RambutanPost
 
 class RambutanPostAdmin(admin.ModelAdmin):
-    list_display = ('name', 'variety', 'quantity', 'price_per_kg', 'farmer', 'created_at', 'image_display')
+    list_display = ('name', 'variety', 'quantity', 'price_per_kg', 'farmer', 'created_at', 'image_display','is_available','quantity_left')
     list_filter = ('variety', 'created_at', 'farmer')
     search_fields = ('name', 'variety', 'farmer__name')  
     ordering = ('-created_at',)
@@ -84,10 +84,13 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]  
 
 admin.site.register(Order, OrderAdmin)
-
+'''
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('order', 'quantity', 'price')
     search_fields = ('order__order_number', )
 
-admin.site.register(OrderItem, OrderItemAdmin)
+admin.site.register(OrderItem, OrderItemAdmin)'''
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ['id', 'rambutan_post', 'quantity']  # Add fields that actually exist in the model
 
+admin.site.register(OrderItem, OrderItemAdmin)

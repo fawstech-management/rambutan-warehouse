@@ -13,6 +13,12 @@
   <!-- Boxicons for Icons -->
   <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
 
+  <!-- SweetAlert2 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
     /* Global Styles */
     body {
@@ -22,61 +28,201 @@
       background-color: #f7f7f7;
     }
 
-    /* Sidebar Styles */
-    .sidebar {
-      width: 250px;
-      height: 100%;
-      background: #4CAF50; /* Green color */
-      position: fixed;
-      left: 0;
-      top: 0;
-      padding-top: 20px;
+    /* Reset Margins and Paddings */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .logo-details {
+    /* Root Variables for Consistent Styling */
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #66BB6A;
+      --accent-color: #388e3c;
+      --light-bg: #f0f4f3;
+      --dark-bg: #333;
+      --text-color: #333;
+      --white: #ffffff;
+      --font-family: 'Roboto', sans-serif;
+      --font-family-logo: 'Fredoka One', cursive;
+    }
+
+    /* General Styling */
+    body {
+      font-family: var(--font-family);
+      background-color: var(--light-bg);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      background-color: var(--primary-color);
+      width: 250px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      padding-top: 40px;
+      transition: width 0.3s ease;
+      z-index: 1000;
+    }
+
+    .sidebar .logo-details {
       text-align: center;
       margin-bottom: 40px;
     }
 
-    .logo_name {
-      font-size: 24px;
-      font-family: 'Fredoka One', cursive;
-      color: white;
+    .sidebar .logo_name {
+      font-family: var(--font-family-logo);
+      font-size: 28px;
+      color: var(--white);
     }
 
-    .nav-links {
+    .sidebar ul {
       list-style: none;
-      padding: 0;
     }
 
-    .nav-links li {
+    .sidebar ul li {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .sidebar ul li a {
+      text-decoration: none;
+      color: var(--white);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background-color: var(--accent-color);
+      transform: translateX(5px);
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+      font-size: 20px;
+    }
+
+    /* Home Section Styling */
+    .home-section {
+      margin-left: 250px;
+      padding: 20px;
+      width: calc(100% - 250px);
+      transition: margin-left 0.3s ease, width 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Responsive Sidebar */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 80px;
+      }
+
+      .home-section {
+        margin-left: 80px;
+        width: calc(100% - 80px);
+      }
+
+      .sidebar .logo_name {
+        display: none;
+      }
+
+      .sidebar ul li a .links_name {
+        display: none;
+      }
+
+      .sidebar ul li a i {
+        margin-right: 0;
+      }
+
+      .top-navbar .logo img {
+        height: 35px;
+      }
+
+      .home-section nav.top-navbar .logo img {
+        height: 35px;
+      }
+    }
+
+    /* Top Navbar Styling */
+    .top-navbar {
+      background-color: var(--secondary-color);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       margin-bottom: 20px;
     }
 
-    .nav-links li a {
-      display: block;
-      padding: 15px;
-      text-decoration: none;
-      font-size: 18px;
+    .logo-text {
+      font-size: 24px;
       color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .top-navbar .logo a {
       display: flex;
       align-items: center;
-      transition: 0.3s;
+      text-decoration: none;
     }
 
-    .nav-links li a .bx {
-      margin-right: 15px;
-      font-size: 24px;
+    .top-navbar .logo img {
+      height: 50px;
+      margin-right: 10px;
     }
 
-    .nav-links li a.active,
-    .nav-links li a:hover {
-      background-color: #4CAF50;
-      border-radius: 5px;
+    .top-navbar ul.nav-icons {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+      align-items: center;
     }
 
-    .log_out {
-      margin-top: 30px;
+    .top-navbar ul.nav-icons li a {
+      text-decoration: none;
+      color: var(--white);
+      font-size: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .top-navbar ul.nav-icons li a:hover {
+      color: var(--accent-color);
+    }
+
+    .top-navbar ul.nav-icons li a .icon-name {
+      font-size: 12px;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+
+    /* Optional: Adjust the icon size and color if needed */
+    .top-navbar ul.nav-icons li.user-profile a i {
+      font-size: 24px; /* Increase icon size */
+      color: var(--white); 
+    }
+    
+    /* Style the username */
+    .top-navbar ul.nav-icons li.user-profile a .icon-name {
+      font-size: 14px; 
+      color: var(--white); 
     }
 
     /* Main Section Styles */
@@ -87,32 +233,19 @@
       min-height: 100vh;
     }
 
-    nav {
+    /* Specific Styling for User Profile */
+    .top-navbar ul.nav-icons li.user-profile a {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #4CAF50;
-      padding: 15px;
-      border-radius: 10px;
-      color: white;
-    }
-
-    nav .dashboard {
-      font-size: 24px;
-      font-family: 'Fredoka One', cursive;
-    }
-
-    nav .profile-details {
-      display: flex;
+      flex-direction: column;
       align-items: center;
     }
-
-    nav .profile-details img {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      margin-right: 10px;
+    
+    .top-navbar ul.nav-icons li.user-profile a .icon-name {
+      font-size: 14px;
+      margin-top: 5px;
     }
+    
+        
 
     .home-content {
       background-color: white;
@@ -170,9 +303,6 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-    <div class="logo-details">
-      <span class="logo_name">Farmers Hub</span>
-    </div>
     <ul class="nav-links">
       <li>
         <a href="{% url 'farmer_dashboard' %}">
@@ -200,23 +330,35 @@
       </li>
     </ul>
   </div>
-
-  <!-- Main Section -->
   <section class="home-section">
-    <nav>
-      <span class="dashboard">View My Posts</span>
-      <div class="profile-details">
-        <img src="https://via.placeholder.com/35" alt="Profile">
-        <span>Hi, {{ user.username }}</span> <!-- Assuming 'user' is passed to the template -->
-        <i class='bx bx-chevron-down'></i>
+    <nav class="top-navbar">
+      <div class="logo">
+        <span class="logo-text">Rambutan Warehouse</span>
       </div>
+      <ul class="nav-icons">
+        <!-- User Profile Section -->
+        <li class="user-profile">
+          <a href="#">
+            <i class='bx bx-user'></i>
+            <span class="icon-name">{{ user.name }}</span>
+          </a>
+        </li>
+        <!-- Logout Icon -->
+        <li>
+          <a href="{% url 'logout' %}">
+            <i class='bx bx-log-out'></i>
+            <span class="icon-name">Logout</span>
+          </a>
+        </li>
+      </ul>
     </nav>
-
+  
     <div class="home-content">
+      <!-- Available Posts Section -->
       <div class="posts-section">
-        <h2>My Rambutan Posts</h2>
+        <h2>Available Rambutan Posts</h2>
         <ul>
-          {% for post in posts %}
+          {% for post in available_posts %}
           <li>
             <img src="/media/{{ post.image }}" alt="{{ post.name }}" width="100px"><br>
             <strong>Name:</strong> {{ post.name }}<br>
@@ -224,22 +366,67 @@
             <strong>Quantity:</strong> {{ post.quantity }} kg<br>
             <strong>Price per kg:</strong> {{ post.price_per_kg }}<br>
             <strong>Description:</strong> {{ post.description }}<br>
-            <strong>Date:</strong> {{ post.created_at }}<br>
-            
+            <strong>Quantity Left:</strong>{{ post.quantity_left }}<br>
             <!-- Add Update and Delete Links Here -->
             <button><a href="{% url 'delete_post' post.id %}">Delete</a></button>
             <button><a href="{% url 'update_post' post.id %}">Update</a></button>
           </li>
           {% empty %}
-          <li>No posts found. Add your first rambutan post.</li>
+          <li>No available posts found. Add your first rambutan post.</li>
           {% endfor %}
         </ul>
         <a href="{% url 'post_rambutan' %}">
           <button class="submit-button">Add More Posts</button>
         </a>
       </div>
+  
+      <!-- Unavailable Posts Section -->
+      <div class="posts-section">
+        <h2>Unavailable Rambutan Posts</h2>
+        <ul>
+          {% for post in unavailable_posts %}
+          <li>
+            <img src="/media/{{ post.image }}" alt="{{ post.name }}" width="100px"><br>
+            <strong>Name:</strong> {{ post.name }}<br>
+            <strong>Variety:</strong> {{ post.variety }}<br>
+            <strong>Quantity:</strong> {{ post.quantity }} kg<br>
+            <strong>Price per kg:</strong> {{ post.price_per_kg }}<br>
+            <strong>Description:</strong> {{ post.description }}<br>
+            <strong>Status:</strong> Unavailable<br>
+            <!-- Optionally allow reposting or updating unavailable posts -->
+            <button><a href="{% url 'delete_post' post.id %}">Delete</a></button>
+            <button><a href="{% url 'update_post' post.id %}">Update</a></button>
+          </li>
+          {% empty %}
+          <li>No unavailable posts found.</li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
   </section>
+  
+
+  <!-- JavaScript Files -->
+  <script>
+    
+    // Confirm Logout with SweetAlert2
+    document.querySelectorAll('.log_out a, .top-navbar a[href="{% url 'logout' %}"]').forEach(function (element) {
+      element.addEventListener('click', function (event) {
+        event.preventDefault();
+        Swal.fire({
+          title: 'Are you sure you want to logout?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, logout',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = this.href;
+          }
+        });
+      });
+    });
+  </script>
 
 </body>
 

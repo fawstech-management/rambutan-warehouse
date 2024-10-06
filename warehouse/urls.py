@@ -3,9 +3,10 @@ from .import views
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from .views import  add_to_wishlist, checkout, order_detail, remove_from_wishlist
+from .views import order_history
 
 urlpatterns = [
-    
+    path('admin/', admin.site.urls),
     path('', views.index, name='home'),  # Root URL
     path('index/', views.index, name='index'),
     path('about/', views.about, name='about'),
@@ -41,6 +42,7 @@ urlpatterns = [
     path('billing/', views.billing_view, name='billing_view'),
     path('checkout/', checkout, name='checkout'),
     path('order/<int:order_number>/', views.order_detail, name='order_detail'),
+    path('order_history/', order_history, name='order_history'),
 
     
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),

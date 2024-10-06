@@ -32,6 +32,7 @@ class RegisterUserForm(forms.ModelForm):
         return contact
 
     def clean_username(self):
+
         username = self.cleaned_data.get('username')
         if not self.is_valid_email(username):
             raise ValidationError("Username must be a valid email address.")

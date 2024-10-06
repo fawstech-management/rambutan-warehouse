@@ -120,6 +120,7 @@
                 <h4>Cart Items</h4>
                 {% for item in cart_items %}
                 <div class="cart-item">
+                    <img src="{% if item.rambutan_post.image %}/media/{{ item.rambutan_post.image }}{% endif %}" alt="{{ product.name }}"  width="100px">
                     <div>{{ item.rambutan_post.name }} (x{{ item.quantity }})</div>
                     <div>₹{{ item.price }}</div>
                 </div>

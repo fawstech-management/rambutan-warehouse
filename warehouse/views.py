@@ -56,7 +56,9 @@ def login_view(request):
             request.session['user_id'] = user.id
             request.session['name'] = user.username
             request.session['role'] = user.role
-            if user.role == 'farmer':
+            if user.is_superuser:  # or user.role == 'admin' if you're using a custom role system
+                return redirect('/admin') 
+            elif user.role == 'farmer':
                 return redirect('farmer_dashboard')
             elif user.role == 'customer':
                 return redirect('customer_dashboard')
@@ -119,6 +121,7 @@ def post_rambutan(request):
         if form.is_valid():
             rambutan_post = form.save(commit=False)
             rambutan_post.farmer = farmer_details  
+            rambutan_post.quantity_left = rambutan_post.quantity  
             rambutan_post.save()
             return redirect('view_posts')  
         else:
@@ -146,25 +149,25 @@ def view_posts(request):
     user = request.user  
 
     try:
-        farmer_details = user.farmerdetails  
+        farmer_details = user.farmerdetails  # Assuming you have FarmerDetails linked to the user
 
-        posts = RambutanPost.objects.filter(farmer=farmer_details)
+        # Filter available and unavailable posts separately
+        available_posts = RambutanPost.objects.filter(farmer=farmer_details, is_available=True)
+        unavailable_posts = RambutanPost.objects.filter(farmer=farmer_details, is_available=False)
 
     except FarmerDetails.DoesNotExist:
-        return redirect('farmer_details')  
+        return redirect('farmer_details')  # Redirect if farmer details don't exist
 
     context = {
-        'posts': posts,
+        'available_posts': available_posts,
+        'unavailable_posts': unavailable_posts,
         'user': user  
     }
-
-    print(context)
 
     return render(request, 'view_posts.html', context)
 
 def redirect_post_rambutan(request):
     return redirect('post_rambutan') 
-
 @login_required
 def update_post(request, id):
     post = get_object_or_404(RambutanPost, id=id)
@@ -173,7 +176,13 @@ def update_post(request, id):
         form = RambutanPostForm(request.POST, request.FILES, instance=post)
         
         if form.is_valid():
-            form.save() 
+            # Save the updated post
+            updated_post = form.save(commit=False)
+
+            # Set the post to available upon updating
+            updated_post.is_available = True
+            updated_post.save()
+
             return redirect('view_posts')
         else:
             return render(request, 'update_post.html', {'form': form, 'post': post})
@@ -181,35 +190,38 @@ def update_post(request, id):
     else:
         form = RambutanPostForm(instance=post)
         return render(request, 'update_post.html', {'form': form, 'post': post})
-'''
+
 @login_required
 def delete_post_confirmation(request, id):
     post = get_object_or_404(RambutanPost, id=id)
-    associated_order_items = OrderItem.objects.filter(cart_item__rambutan_post=post)
+
+    # Check if the post is in a wishlist, cart, or part of an order
+    in_cart = Cart.objects.filter(rambutan_post=post).exists()
+    in_wishlist = Wishlist.objects.filter(rambutan_post=post).exists()
+    in_order = OrderItem.objects.filter(rambutan_post=post).exists()
 
     if request.method == 'POST':
-        if associated_order_items.exists():
+        # If the post is in any order, show a warning and prevent deletion
+        if in_order:
             messages.warning(request, 'This post cannot be deleted because it has associated orders.')
             return redirect('view_posts')
-        post.delete()
-        messages.success(request, 'Post deleted successfully.')
-        return redirect('view_posts')  
-    return render(request, 'confirm_delete.html', {
-        'post': post,
-        'has_orders': associated_order_items.exists(),
-        'associated_orders': associated_order_items
-    })'''
-@login_required
-def delete_post_confirmation(request, id):
-    post = get_object_or_404(RambutanPost, id=id)
 
-    if request.method == 'POST':
-        post.delete()
-        messages.success(request, 'Post deleted successfully.')
+        # If in a cart or wishlist, mark the post as unavailable (without deleting the cart/wishlist items)
+        if in_cart or in_wishlist:
+            post.is_available = False  # Mark as unavailable
+            post.save()
+            messages.success(request, 'Post marked as unavailable because it is in a cart or wishlist.')
+        else:
+            post.delete()  # Delete only if not in cart or wishlist
+            messages.success(request, 'Post deleted successfully.')
+        
         return redirect('view_posts')
 
-    return render(request, 'confirm_delete.html', {
+    return render(request, 'delete_post_confirmation.html', {
         'post': post,
+        'in_cart': in_cart,
+        'in_wishlist': in_wishlist,
+        'in_order': in_order,
     })
 
 
@@ -247,13 +259,22 @@ def profile_view(request):
     return render(request, 'customer_profile.html')
     
 
-
 @login_required
 def products_browse(request):
-    products = RambutanPost.objects.values('id','name', 'variety', 'image', 'price_per_kg', 'created_at', 'description')
-    
+    products = RambutanPost.objects.all().values('id', 'name', 'variety', 'image', 'price_per_kg', 'created_at', 'description', 'is_available')
+
+    # Retrieve items in cart and wishlist
+    cart_items = Cart.objects.filter(user=request.user).values_list('rambutan_post_id', flat=True)
+    wishlist_items = Wishlist.objects.filter(user=request.user).values_list('rambutan_post_id', flat=True)
+
+    # Flag products that are in the cart or wishlist but are unavailable
+    for product in products:
+        #if product['id'] in cart_items or product['id'] in wishlist_items:
+            if not product['is_available']:
+                product['status_message'] = 'Unavailable'
+
     context = {
-        'products': products
+        'products': products,
     }
     return render(request, 'shop.html', context)
 
@@ -265,16 +286,21 @@ def wishlist(request):
     wishlists = RambutanPost.objects.filter(id__in=[item.rambutan_post_id for item in wishlist_items])
 
     return render(request, 'wishlist.html', {'wishlist_items': wishlists})
-
 @login_required
-def add_to_wishlist(request,id):
-    post = RambutanPost.objects.get(id=id)
-    wishlist_item, created = Wishlist.objects.get_or_create(
-            user=request.user,
-            rambutan_post=post 
-        )
+def add_to_wishlist(request, id):
+    post = get_object_or_404(RambutanPost, id=id)
 
-    return redirect('wishlist') 
+    # Check if the product is unavailable but already in the wishlist
+    wishlist_item, created = Wishlist.objects.get_or_create(
+        user=request.user,
+        rambutan_post=post
+    )
+
+    if not post.is_available and created:
+        # If the product is unavailable and is being added to the wishlist for the first time
+        messages.warning(request, f"{post.name} is currently unavailable, but it has been added to your wishlist.")
+
+    return redirect('wishlist')
 
 
 @login_required
@@ -289,20 +315,26 @@ def remove_from_wishlist(request, id):
         #messages.info(request, 'Product is not in your wishlist.')
 
     return redirect('wishlist')
-
 @login_required
 def add_to_cart(request, rambutan_post_id):
     rambutan_post = get_object_or_404(RambutanPost, id=rambutan_post_id)
-    cart_item, created = Cart.objects.get_or_create(
-        user=request.user, 
-        rambutan_post=rambutan_post,
-        defaults={'price': rambutan_post.price_per_kg} 
-    )
+
+    if not rambutan_post.is_available:
+        # If the product is unavailable, inform the user but still display it in the cart
+        messages.warning(request, f"{rambutan_post.name} is currently unavailable. You can keep it in your cart but cannot purchase it.")
+    else:
+        # Proceed to add the product to the cart if it's available
+        cart_item, created = Cart.objects.get_or_create(
+            user=request.user, 
+            rambutan_post=rambutan_post,
+            defaults={'price': rambutan_post.price_per_kg} 
+        )
+
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
     
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
-    return redirect('cart')  
+    return redirect('cart')
 
 @login_required
 def cart(request):
@@ -363,15 +395,21 @@ def billing_view(request):
         )
         return redirect('place_order') 
 
-    return render(request, 'checkout.html') 
-
+    return render(request, 'checkout.html')
+ 
 @login_required
 def place_order(request):
     billing_details = BillingDetail.objects.filter(user=request.user).last()
     cart_items = Cart.objects.filter(user=request.user)
 
     if not cart_items.exists():
-        return redirect('cart')  
+        return redirect('cart')
+
+    # Check if all items in the cart are available
+    unavailable_items = cart_items.filter(rambutan_post__is_available=False)
+    if unavailable_items.exists():
+        messages.error(request, "Some items in your cart are no longer available.")
+        return redirect('cart')
 
     subtotal = sum(item.total_price for item in cart_items)
     delivery_fee = 0
@@ -381,6 +419,7 @@ def place_order(request):
     if request.method == 'POST':
         payment_method = request.POST.get('payment-method')
 
+        # Create the Order
         order = Order.objects.create(
             billing_detail=billing_details,
             user=request.user,
@@ -388,15 +427,34 @@ def place_order(request):
             payment_method=payment_method
         )
 
+        # Create OrderItems for each cart item and update quantity_left
         for item in cart_items:
+            rambutan_post = item.rambutan_post
+            ordered_quantity = item.quantity
+
+            # Ensure that there is enough quantity left in the RambutanPost
+            if rambutan_post.quantity_left < ordered_quantity:
+                messages.error(request, f"Insufficient quantity for {rambutan_post.name}.")
+                return redirect('cart')
+
+            # Subtract ordered quantity from the rambutan_post's quantity_left
+            rambutan_post.quantity_left -= ordered_quantity
+
+            # Check if quantity_left is now less than or equal to zero
+            if rambutan_post.quantity_left <= 0:
+                rambutan_post.is_available = False  # Mark as unavailable
+
+            rambutan_post.save()
+
+            # Create the OrderItem
             OrderItem.objects.create(
                 order=order,
-                #cart_item=item,
-                #rambutan_post=item.rambutan_post,
-                quantity=item.quantity,
+                rambutan_post=rambutan_post,
+                quantity=ordered_quantity,
                 price=item.price
             )
 
+        # Clear the cart after placing the order
         cart_items.delete()
 
         return redirect('order_detail', order_number=order.order_number)
@@ -409,6 +467,8 @@ def place_order(request):
         'discount': discount,
         'total': total,
     })
+
+
 @login_required
 def order_detail(request, order_number):
     try:
@@ -433,4 +493,15 @@ def order_detail(request, order_number):
         'delivery_fee': delivery_fee,
         'discount': discount,
         'total': total,
+    })
+from django.shortcuts import render
+from .models import Order
+
+@login_required
+def order_history(request):
+    # Fetching the user's orders and prefetching related items
+    orders = Order.objects.filter(user=request.user).prefetch_related('items')
+   # order_Item = OrderItem.objects.filter(user=request.user).prefetch_related('items')
+    return render(request, 'order_history.html', {
+        'orders': orders
     })

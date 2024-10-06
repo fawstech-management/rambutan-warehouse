@@ -55,65 +55,57 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	    <div class="container">
-	      <a class="navbar-brand" href="index.html">Rambutan Warehouse</a>
+	      <a class="navbar-brand" href="#">Rambutan Warehouse</a>
 	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 	        <span class="oi oi-menu"></span> Menu
 	      </button>
 
 	      <div class="collapse navbar-collapse" id="ftco-nav">
 	        <ul class="navbar-nav ml-auto">
-	          <li class="nav-item active"><a href="index.html" class="nav-link">Home</a></li>
-	          <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Shop</a>
-              <div class="dropdown-menu" aria-labelledby="dropdown04">
-              	<a class="dropdown-item" href="shop.html">Shop</a>
-              	<a class="dropdown-item" href="wishlist.html">Wishlist</a>
-                <a class="dropdown-item" href="login.html">Cart</a>
-              </div>
-            </li>
+	          <li class="nav-item active"><a href="{% url 'index' %}" class="nav-link">Home</a></li>
+			<li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Shop</a></li>
 			<li class="nav-item"><a href="{% url 'about' %}" class="nav-link">About</a></li>
 			<li class="nav-item"><a href="{% url 'contact' %}" class="nav-link">Contact</a></li>
 			<li class="nav-item"><a href="{% url 'register' %}" class="nav-link">SignUp</a></li>
 			<li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Login</a></li>
-			<li class="nav-item cta cta-colored"><a href="{% url 'login' %}" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
+			{% comment %} <li class="nav-item cta cta-colored"><a href="{% url 'login' %}" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li> {% endcomment %}
 		  </ul>
 	      </div>
 	    </div>
 	  </nav>
+    <!-- END nav -->
 
     <section id="home-section" class="hero">
-		  <div class="home-slider owl-carousel"> 
-			<div class="slider-item" style="background-image: url('{% static 'images/bg2_new.jpg' %}');">
+		<div class="home-slider owl-carousel">
+		<div class="slider-item" style="background-image: url('{% static 'images/bg2_new.jpg' %}');">
+			<div class="overlay"></div>
+		  <div class="container">
+			<div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
 
-	      	<div class="overlay"></div>
-	        <div class="container">
-	          <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
+			  <div class="col-md-12 ftco-animate text-center">
+				<h1 class="mb-2">We serve Fresh Rambutan &amp; their Products</h1>
+				<h2 class="subheading mb-4">We deliver organic rambutan fruits</h2>
+			  </div>
 
-	            <div class="col-md-12 ftco-animate text-center">
-	              <h1 class="mb-2">We serve Fresh Rambutan &amp; their Products</h1>
-	              <h2 class="subheading mb-4">We deliver organic rambutan fruits</h2>
-	            </div>
+			</div>
+		  </div>
+		</div>
 
-	          </div>
-	        </div>
-	      </div>
-		  
-	      <div class="slider-item" style="background-image: url('{% static 'images/bg1_new.jpg' %}');">
+		<div class="slider-item" style="background-image: url('{% static 'images/bg1_new.jpg' %}');">
+			<div class="overlay"></div>
+		  <div class="container">
+			<div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
 
-	      	<div class="overlay"></div>
-	        <div class="container">
-	          <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
+			  <div class="col-sm-12 ftco-animate text-center">
+				<h1 class="mb-2">100% Fresh &amp; Organic Rambutan</h1>
+				<h2 class="subheading mb-4">We deliver organic rambutan fruits</h2>
+			  </div>
 
-	            <div class="col-sm-12 ftco-animate text-center">
-	              <h1 class="mb-2">100% Fresh &amp; Organic Rambutan</h1>
-	              <h2 class="subheading mb-4">We deliver organic rambutan fruits</h2>
-	            </div>
-
-	          </div>
-	        </div>
-	      </div>
-	    </div>
-    </section>
+			</div>
+		  </div>
+		</div>
+	  </div>
+  </section>
 
     <section class="ftco-section">
 			<div class="container">
