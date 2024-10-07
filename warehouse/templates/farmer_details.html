@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,63 +72,43 @@
 <div class="container">
     <h2>Farmer Details Form</h2>
 
-    <form action="{% url 'farmer_details' %}" method="POST">
+    <form action="{% url 'farmer_details' %}" method="POST" enctype="multipart/form-data">
         <!-- CSRF Token (For Django) -->
-         {% csrf_token %}
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-
-        <div class="form-group">
-        
-        </div>
+        {% csrf_token %}
 
         <div class="form-group">
             <label for="address">Address</label>
-            <textarea id="address" name="address" rows="3" placeholder="Enter your address"></textarea>
+            <textarea id="address" name="address" rows="3" placeholder="Enter your address" required></textarea>
         </div>
 
         <div class="form-group">
             <label for="mobile_number">Mobile Number</label>
-            <input type="text" id="mobile_number" name="mobile_number" placeholder="Mobile Number" pattern="^[6-9]\d{9}$" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9" required>
+            <input type="text" id="mobile_number" name="mobile_number" placeholder="Mobile Number" pattern="^[6-9]\d{9}$" title="Enter a valid 10-digit mobile number starting with 6, 7, 8, or 9"  required>
         </div>
 
         <div class="form-group">
             <label for="aadhar_number">Aadhaar Number</label>
-            <input type="text" id="aadhar_number" name="aadhar_number" placeholder="Aadhaar Number" pattern="^\d{12}$" title="Enter a valid 12-digit Aadhaar number" required>
+            <input type="text" id="aadhar_number" name="aadhar_number" placeholder="Aadhaar Number" pattern="^\d{12}$" title="Enter a valid 12-digit Aadhaar number"  required>
         </div>
 
         <div class="form-group">
             <label for="account_number">Account Number</label>
-            <input type="text" id="account_number" name="account_number" placeholder="Account Number" pattern="^\d{9,18}$" title="Enter a valid account number (9 to 18 digits)" required>
+            <input type="text" id="account_number" name="account_number" placeholder="Account Number" pattern="^\d{9,18}$" title="Enter a valid account number (9 to 18 digits)"  required>
         </div>
 
         <div class="form-group">
             <label for="ifsc_code">IFSC Code</label>
-            <input type="text" id="ifsc_code" name="ifsc_code" placeholder="IFSC Code" pattern="^[A-Z]{4}0[A-Z0-9]{6}$" title="Enter a valid IFSC code (e.g., ABCD0123456)" required>
+            <input type="text" id="ifsc_code" name="ifsc_code" placeholder="IFSC Code" pattern="^[A-Z]{4}0[A-Z0-9]{6}$" title="Enter a valid IFSC code (e.g., ABCD0123456)"  required>
         </div>
 
         <div class="form-group">
             <label for="bank_name">Bank Name</label>
-            <input type="text" id="bank_name" name="bank_name" placeholder="Bank Name" required>
+            <input type="text" id="bank_name" name="bank_name" placeholder="Bank Name"  required>
         </div>
 
         <div class="form-group">
             <label for="location">Location</label>
             <input type="text" id="location" name="location" placeholder="Location" required>
-        </div>
-
-        <div class="form-group">
-            <label for="tree_variety">Tree Variety</label>
-            <input type="text" id="tree_variety" name="tree_variety" placeholder="Tree Variety" required>
-        </div>
-
-        <div class="form-group">
-            <label for="total_trees">Total Trees</label>
-            <input type="number" id="total_trees" name="total_trees" placeholder="Total Trees" required>
-        </div>
-
-        <div class="form-group">
-            <label for="total_amount">Total Amount</label>
-            <input type="number" id="total_amount" name="total_amount" placeholder="Total Amount" required>
         </div>
 
         <button type="submit">Submit</button>

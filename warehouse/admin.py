@@ -10,9 +10,9 @@ admin.site.register(Registeruser, RegisteruserAdmin)
 
 @admin.register(FarmerDetails)
 class FarmerDetailsAdmin(admin.ModelAdmin):
-    list_display = ('mobile_number', 'aadhar_number','bank_name','location', 'total_trees', 'total_amount')
+    list_display = ('mobile_number', 'aadhar_number','bank_name','location')
     search_fields = ('mobile_number', 'location', 'aadhar_number','bank_name')
-    list_filter = ('tree_variety','location',)
+    list_filter = ('location',)
     
 @admin.register(CustomerDetails)
 class CustomerDetailsAdmin(admin.ModelAdmin):

@@ -80,32 +80,57 @@ def farmer_dashboard(request):
     except Registeruser.DoesNotExist:
         return render(request, '404.html')  
     return render(request, 'farmer_dashboard.html', {'farmer': user})
-
-
 def farmer_details(request):
     try:
-       
         farmer_details = FarmerDetails.objects.get(user=request.user)
     except FarmerDetails.DoesNotExist:
         farmer_details = None
 
     if request.method == 'POST':
+        # Extract the form data manually from request.POST
+        address = request.POST.get('address')
+        mobile_number = request.POST.get('mobile_number')
+        aadhar_number = request.POST.get('aadhar_number')
+        account_number = request.POST.get('account_number')
+        ifsc_code = request.POST.get('ifsc_code')
+        bank_name = request.POST.get('bank_name')
+        location = request.POST.get('location')
         
-        form = FarmerDetailsForm(request.POST, request.FILES, instance=farmer_details)
-        if form.is_valid():
-            farmer_profile = form.save()
-            farmer_profile.user = request.user  
-            farmer_profile.save()
-            #messages.success(request, "Your profile has been updated successfully." if farmer_details else "Profile created successfully.")
-            return redirect('farmer_dashboard') 
-        #else:
-            #messages.error(request,message=form.errors) 
-    else:
-        form = FarmerDetailsForm(instance=farmer_details)
 
+        # Save or update the FarmerDetails instance
+        if farmer_details:
+            farmer_details.address = address
+            farmer_details.mobile_number = mobile_number
+            farmer_details.aadhar_number = aadhar_number
+            farmer_details.account_number = account_number
+            farmer_details.ifsc_code = ifsc_code
+            farmer_details.bank_name = bank_name
+            farmer_details.location = location
+        
+            farmer_details.save()
+        else:
+            farmer_details = FarmerDetails.objects.create(
+                user=request.user,
+                address=address,
+                mobile_number=mobile_number,
+                aadhar_number=aadhar_number,
+                account_number=account_number,
+                ifsc_code=ifsc_code,
+                bank_name=bank_name,
+                location=location,
+               
+            )
+
+        
+        # Redirect to the dashboard after saving
+        return redirect('farmer_dashboard')
+
+    # Render the form in the HTML template
     return render(request, 'farmer_details.html', {
-        'form': form
+        'farmer_details': farmer_details
     })
+
+
 
 
 def post_rambutan(request):

@@ -117,7 +117,7 @@ class FarmerDetailsForm(forms.ModelForm):
         model = FarmerDetails
         fields = [
             'user', 'address', 'mobile_number', 'location', 'aadhar_number', 
-            'bank_name', 'account_number', 'ifsc_code', 'tree_variety', 'total_trees', 'total_amount'
+            'bank_name', 'account_number', 'ifsc_code'
         ]
         widgets = {
             'address': forms.Textarea(attrs={'rows': 3}),
