@@ -533,7 +533,7 @@
             <span>Total</span>
             <span>₹{{ total_price|floatformat:2 }}</span>
         </p>
-        <a href="{% url 'checkout' %}" class="checkout-btn {% if total_price == 0.00 %}disabled{% endif %}">Proceed to Checkout</a>
+        <a href="{% url 'place_order' %}" class="checkout-btn {% if total_price == 0.00 %}disabled{% endif %}">Proceed to Checkout</a>
     </div>
 </div>
 

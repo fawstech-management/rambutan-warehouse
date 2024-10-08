@@ -433,21 +433,31 @@ def billing_view(request):
         return redirect('place_order')
 
     return render(request, 'checkout.html')
-
 @login_required
 def place_order(request):
+    # Retrieve the latest billing details for the user
     billing_details = BillingDetail.objects.filter(user=request.user).last()
+
+    # Check if billing details are filled
+    if not billing_details:
+        # Redirect to billing view if details are not filled
+        return redirect('billing_view')
+
+    # Retrieve the cart items for the user
     cart_items = Cart.objects.filter(user=request.user)
 
+    # Ensure the cart is not empty
     if not cart_items.exists():
         return redirect('cart')
 
     # Check if all items in the cart are available
     unavailable_items = cart_items.filter(rambutan_post__is_available=False)
     if unavailable_items.exists():
-        #messages.error(request, "Some items in your cart are no longer available.")
+        # Redirect to cart if any items are unavailable
+        # messages.error(request, "Some items in your cart are no longer available.")
         return redirect('cart')
 
+    # Calculate the total cost
     subtotal = sum(item.total_price for item in cart_items)
     delivery_fee = 0
     discount = 0
@@ -464,22 +474,23 @@ def place_order(request):
             payment_method=payment_method
         )
 
-        # Create OrderItems for each cart item and update quantity_left
+        # Process each cart item and adjust the RambutanPost quantities
         for item in cart_items:
             rambutan_post = item.rambutan_post
             ordered_quantity = item.quantity
 
             # Ensure that there is enough quantity left in the RambutanPost
             if rambutan_post.quantity_left < ordered_quantity:
-                #messages.error(request, f"Insufficient quantity for {rambutan_post.name}.")
+                # Redirect to cart if insufficient quantity is available
+                # messages.error(request, f"Insufficient quantity for {rambutan_post.name}.")
                 return redirect('cart')
 
-            # Subtract ordered quantity from the rambutan_post's quantity_left
+            # Update the quantity_left for the RambutanPost
             rambutan_post.quantity_left -= ordered_quantity
 
-            # Check if quantity_left is now less than or equal to zero
+            # If quantity_left is 0 or less, mark the post as unavailable
             if rambutan_post.quantity_left <= 0:
-                rambutan_post.is_available = False  # Mark as unavailable
+                rambutan_post.is_available = False
 
             rambutan_post.save()
 
@@ -491,7 +502,7 @@ def place_order(request):
                 price=item.price
             )
 
-        # Clear the cart after placing the order
+        # Clear the user's cart after the order is placed
         cart_items.delete()
 
         return redirect('order_detail', order_number=order.order_number)
@@ -504,6 +515,7 @@ def place_order(request):
         'discount': discount,
         'total': total,
     })
+
 
 
 @login_required
