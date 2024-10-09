@@ -22,7 +22,7 @@ def about(request):
 
 def contact(request):
     return render(request,'contact.html')
-
+'''
 def register(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
@@ -41,7 +41,7 @@ def register(request):
         form = RegisterUserForm()
 
     return render(request, 'register.html', {'form': form})
-
+'''
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('email')
@@ -552,3 +552,99 @@ def order_history(request):
     return render(request, 'order_history.html', {
         'orders': orders
     })
+
+
+import random
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import RegisterUserForm
+from .models import Registeruser  # Ensure this is your user model
+
+# OTP storage (in production, consider storing this securely)
+otp_storage = {}
+
+# Function to send the OTP email
+def send_otp_email(user_email):
+    otp = random.randint(1000, 9999)  # Generate a random 4-digit OTP
+    otp_storage[user_email] = otp  # Store OTP temporarily (in memory for now)
+
+    subject = 'Your OTP for Email Verification'
+    message = f'Your OTP is {otp}. Please use this to verify your email.'
+    from_email = 'your_email@gmail.com'  # Replace with your email
+    recipient_list = [user_email]
+
+    send_mail(subject, message, from_email, recipient_list)
+
+# Main register view with OTP logic
+def register(request):
+    if request.method == 'POST':
+        form = RegisterUserForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+
+            # Check if the email is already registered
+            if Registeruser.objects.filter(email=email).exists():
+                messages.info(request, "Email is already registered. Please log in.")
+                return redirect('login')
+
+            # Save the user but deactivate the account until OTP is verified
+            user = form.save(commit=False)
+            user.is_active = False  # Deactivate the account initially
+            user.save()
+
+            # Send OTP to the user's email
+            send_otp_email(user.email)
+
+            # Store the user's email in session for OTP verification
+            request.session['user_email'] = user.email
+
+            # Redirect to the OTP verification page
+            return redirect('verify_otp')
+        else:
+            messages.error(request, form.errors)
+    else:
+        form = RegisterUserForm()
+
+    return render(request, 'register.html', {'form': form})
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
+from django.contrib import messages
+
+# Assuming you're using a custom user model
+User = get_user_model()
+
+def verify_otp(request):
+    if request.method == 'POST':
+        otp_input = request.POST.get('otp')
+        email = request.session.get('user_email')  # Get email from session
+
+        if not email:
+            messages.error(request, "Session expired. Please register again.")
+            return redirect('register')
+
+        # Verify OTP
+        if otp_storage.get(email) and otp_storage[email] == int(otp_input):
+            try:
+                user = User.objects.get(email=email)
+                user.is_active = True  # Activate the user
+                user.save()
+
+                # Remove the OTP from storage once it's verified
+                del otp_storage[email]
+                del request.session['user_email']  # Clear email from session
+
+                messages.success(request, "Your account has been successfully verified! You can now log in.")
+                return redirect('login')
+
+            except User.DoesNotExist:
+                messages.error(request, "User with this email does not exist.")
+                return redirect('register')
+
+        else:
+            messages.error(request, "Invalid OTP. Please try again.")
+            return render(request, 'verify_otp.html')
+
+    # If the request is GET, just display the OTP form
+    return render(request, 'verify_otp.html')

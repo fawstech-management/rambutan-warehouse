@@ -12,7 +12,9 @@ class RegisterUserForm(forms.ModelForm):
     class Meta:
         model = Registeruser
         fields = ['name', 'contact', 'address', 'place', 'username', 'password', 'role']
-
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
     CONTACT_PATTERN = '^[6-9]\d{9}$'
 
     def clean_password(self):

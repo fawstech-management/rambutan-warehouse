@@ -43,7 +43,7 @@ urlpatterns = [
     path('checkout/', checkout, name='checkout'),
     path('order/<int:order_number>/', views.order_detail, name='order_detail'),
     path('order_history/', order_history, name='order_history'),
-
+    path('verify-otp/', views.verify_otp, name='verify_otp'),
     
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
