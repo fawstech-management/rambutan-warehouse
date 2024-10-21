@@ -776,7 +776,7 @@ def order_notifications(request):
 
 
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -942,3 +942,68 @@ def delete_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order.delete()
     return redirect('view_orders')
+
+
+@login_required
+def edit_farmer_profile(request):
+    # Fetch the current user's `Registeruser` and `FarmerDetails` instances
+    user_instance = get_object_or_404(Registeruser, username=request.user.username)
+    farmer_details_instance = get_object_or_404(FarmerDetails, user=user_instance)
+    
+    if request.method == 'POST':
+        # If the form is submitted, get the POST data
+        name = request.POST.get('name')
+        contact = request.POST.get('contact')
+        address = request.POST.get('address')
+        place = request.POST.get('place')
+        mobile_number = request.POST.get('mobile_number')
+        location = request.POST.get('location')
+        aadhar_number = request.POST.get('aadhar_number')
+        bank_name = request.POST.get('bank_name')
+        account_number = request.POST.get('account_number')
+        ifsc_code = request.POST.get('ifsc_code')
+        
+        # Update Registeruser instance
+        user_instance.name = name
+        user_instance.contact = contact
+        user_instance.address = address
+        user_instance.place = place
+        user_instance.save()
+
+        # Update FarmerDetails instance
+        farmer_details_instance.mobile_number = mobile_number
+        farmer_details_instance.location = location
+        farmer_details_instance.aadhar_number = aadhar_number
+        farmer_details_instance.bank_name = bank_name
+        farmer_details_instance.account_number = account_number
+        farmer_details_instance.ifsc_code = ifsc_code
+        farmer_details_instance.save()
+
+        # Display success message and redirect
+        #messages.success(request, 'Profile updated successfully!')
+        return redirect(reverse('farmer_dashboard'))
+    
+    return render(request, 'edit_farmer_profile.html', {
+        'user_instance': user_instance,
+        'farmer_details_instance': farmer_details_instance
+    })
+
+# views.py
+
+
+@login_required
+def edit_customer_profile(request):
+    user = get_object_or_404(Registeruser, username=request.user.username)  # Get the logged-in user's details
+
+    if request.method == 'POST':
+        # Update user information
+        user.name = request.POST.get('name')
+        user.address = request.POST.get('address')
+        user.contact = request.POST.get('contact')
+        user.place = request.POST.get('place')
+        user.save()  # Save the updated details
+
+        #messages.success(request, 'Your profile has been updated successfully!')
+        return redirect('profile_view')  # Redirect to profile view after saving
+
+    return render(request, 'edit_customer_profile.html', {'user': user})  # Pass user to the template

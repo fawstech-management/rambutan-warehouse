@@ -58,6 +58,9 @@ urlpatterns = [
     path('orders/', views.view_orders, name='view_orders'),
     path('order/<int:order_id>/', views.view_order_detail, name='view_order_detail'),
     path('order/<int:order_id>/delete/', views.delete_order, name='delete_order'),
+    path('edit-farmer-profile/', views.edit_farmer_profile, name='edit_farmer_profile'),
+    path('edit-profile/', views.edit_customer_profile, name='edit_customer_profile'),  # New URL for editing user details
+   
 
 
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),

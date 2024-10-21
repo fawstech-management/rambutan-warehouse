@@ -387,6 +387,25 @@
         margin-bottom: 15px;
     }
 
+    .edit {
+  margin-top: 15px; /* Add some spacing above the button */
+}
+
+.edit-button {
+  display: inline-block;
+  background-color: var(--secondary-color); /* Use your secondary color */
+  color: var(--white);
+  padding: 10px 20px; /* Add padding for a better clickable area */
+  text-decoration: none;
+  border-radius: 5px; /* Slightly rounded corners */
+  font-size: 16px; /* Font size adjustment */
+  transition: background-color 0.3s, transform 0.2s; /* Transition effects */
+}
+
+.edit-button:hover {
+  background-color: var(--accent-color); /* Change background on hover */
+  transform: translateY(-2px); /* Lift the button slightly on hover */
+}
 
   </style>
 </head>
@@ -481,7 +500,11 @@
           <div><strong>Phone Number:</strong> {{ farmer.contact }}</div>
           <div><strong>Place:</strong> {{ farmer.place }}</div>
         </div>
-      </div>
+     
+        <div class="edit">
+          <a href="{% url 'edit_farmer_profile' %}" class="edit-button">Edit Farmer Profile</a>
+        </div>
+           </div>
 <!-- Quick Actions Section -->
 <div class="quick-actions">
   <div class="card">
